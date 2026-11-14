@@ -17,6 +17,7 @@ import ForecastView from './views/forecast'
 import SegmentView from './views/segment'
 import SchedulerView from './views/scheduler'
 import NotifyView from './views/notify'
+import NotifyBatchDetailView from './views/notify/NotifyBatchDetailView'
 import CacheView from './views/cache'
 import TagView from './views/tag'
 import ShareView from './views/share'
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="/segment" element={<SegmentView />} />
           <Route path="/scheduler" element={<SchedulerView />} />
           <Route path="/notify" element={<NotifyView />} />
+          <Route path="/notify/batches/:batchId" element={<NotifyBatchDetailView />} />
           <Route path="/cache" element={<CacheView />} />
           <Route path="/tag" element={<TagView />} />
           <Route path="/share" element={<ShareView />} />

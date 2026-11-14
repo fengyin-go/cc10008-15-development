@@ -20,11 +20,29 @@ function readStorage(): Record<string, EntryRow[]> {
   }
   try {
     const parsed = JSON.parse(raw) as Record<string, EntryRow[]>
-    return { ...fallback, ...parsed }
+    // 通知模块在旧骨架里只有「通知分发样例N」这种占位规则，无法驱动批次聚合。
+    // 只在整组都是占位规则时换成真实种子，并保留用户点过的状态；改过内容的一律不动。
+    const merged: Record<string, EntryRow[]> = { ...fallback, ...parsed }
+    const storedNotify = parsed.notify
+    if (Array.isArray(storedNotify) && storedNotify.length > 0 && storedNotify.every(isPlaceholderNotifyRow)) {
+      merged.notify = fallback.notify.map((seedRow) => {
+        const storedRow = storedNotify.find((item) => Number(item.id) === Number(seedRow.id))
+        return { ...seedRow, status: storedRow?.status ?? seedRow.status }
+      })
+    }
+    return merged
   } catch {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback))
     return fallback
   }
+}
+
+/** 旧骨架的通知规则：编号 NOTI-000N，字段全是“通知分发样例N”。 */
+function isPlaceholderNotifyRow(row: EntryRow): boolean {
+  return (
+    /^NOTI-000\d+$/.test(String(row['规则编号'] ?? '')) &&
+    String(row['触发条件'] ?? '').includes('通知分发样例')
+  )
 }
 
 let cache: Record<string, EntryRow[]> | null = null

@@ -35,3 +35,28 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .error-text { color: #b42318; }
 .status-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
 .legend-item { background: #eef2f7; border-radius: 999px; padding: 2px 10px; }
+
+/* ===== 通知分发：批次列表与详情 ===== */
+.section-title { margin: 18px 0 8px; font-size: 14px; color: #334155; }
+.muted-text { color: var(--muted); font-size: 12px; }
+.badge { display: inline-block; border-radius: 999px; padding: 1px 8px; font-size: 12px; line-height: 18px; }
+.badge.ok { background: #e7f6ec; color: #067647; }
+.badge.info { background: #e8f0fe; color: #1d4ed8; }
+.badge.warn { background: #fff4e5; color: #b45309; }
+.badge.muted { background: #eef2f7; color: #64748b; }
+.badge.danger { background: #fde8e8; color: #b42318; }
+.legend-danger { background: #fde8e8; color: #b42318; }
+.evidence-list { margin: 6px 0 0; padding-left: 18px; font-size: 12px; color: #475569; }
+.evidence-list li { margin: 2px 0; }
+.message-preview { background: #f8fafc; border: 1px dashed var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px; white-space: pre-wrap; }
+.batch-reason { margin: 4px 0 0; font-size: 13px; color: #334155; }
+.batch-reason.warn { color: #b45309; }
+.batch-reason.danger { color: #b42318; }
+.channel-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.channel-card { flex: 1 1 220px; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.channel-card > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.detail-foot { margin-top: 16px; }
+.page-messages { display: flex; flex-direction: column; gap: 2px; text-align: right; }
+.notice-text { color: #067647; }
+.filter-item select { border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; background: #fff; font-size: 13px; }
+.data-table td .badge { white-space: nowrap; }

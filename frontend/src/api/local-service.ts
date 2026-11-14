@@ -1,5 +1,6 @@
 import { MODULE_BY_KEY } from '@/data/modules'
 import { allRows, listRows, resetRows, saveRows } from '@/data/local-store'
+import { emitReportGenerationEvent, withdrawNotificationBatchesForRule } from '@/data/notify-service'
 import type { ActionResult, EntryRow, ModuleMeta, OverviewResult, PageResult } from '@/data/types'
 
 // 会写进数据的「往回走」动作：命中就把这条记录标成异常态，看板上能一眼看出来。
@@ -53,7 +54,25 @@ export function runAction(key: string, id: number, action: string): ActionResult
   const next = [...rows]
   next[index] = updated
   saveRows(key, next)
-  return { ok: true, message: `${meta.entity}已${action}，当前状态「${target}」` }
+
+  // 通知规则停用后，合并窗口里还没发出去的事件要撤回；已送达的保留，恢复规则也不补发。
+  let suffix = ''
+  if (key === 'notify' && updated.status === '已停用') {
+    const withdrawn = withdrawNotificationBatchesForRule(Number(id))
+    if (withdrawn.batches > 0) {
+      suffix = `；已撤回 ${withdrawn.batches} 个批次中 ${withdrawn.events} 条待发送事件（已送达记录不补发）`
+    }
+  }
+  // 报告模板生效即视为一次报告生成完成：推送事件并入报告类规则的窗口，
+  // 与普通告警共用渠道时各自成批、互不覆盖。
+  if (key === 'reportgen' && updated.status === '已生效') {
+    const reportName = String(updated['模板名称'] ?? updated['模板编号'] ?? `模板 ${id}`)
+    const emitted = emitReportGenerationEvent(reportName)
+    if (emitted.batches.length > 0) {
+      suffix = `；已并入报告推送批次 ${emitted.batches.join('、')}`
+    }
+  }
+  return { ok: true, message: `${meta.entity}已${action}，当前状态「${target}」${suffix}` }
 }
 
 export function resetModule(key: string): PageResult {
